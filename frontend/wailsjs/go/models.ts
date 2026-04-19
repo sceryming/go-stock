@@ -555,6 +555,7 @@ export namespace data {
 	    openAiEnable: boolean;
 	    prompt: string;
 	    checkUpdate: boolean;
+	    updateChannel: string;
 	    questionTemplate: string;
 	    crawlTimeOut: number;
 	    kDays: number;
@@ -571,6 +572,8 @@ export namespace data {
 	    httpProxyEnabled: boolean;
 	    enableAgent: boolean;
 	    qgqpBId: string;
+	    iwencaiApiKey: string;
+	    emApiKey: string;
 	    windowWidth: number;
 	    windowHeight: number;
 	    aiConfigs: AIConfig[];
@@ -594,6 +597,7 @@ export namespace data {
 	        this.openAiEnable = source["openAiEnable"];
 	        this.prompt = source["prompt"];
 	        this.checkUpdate = source["checkUpdate"];
+	        this.updateChannel = source["updateChannel"];
 	        this.questionTemplate = source["questionTemplate"];
 	        this.crawlTimeOut = source["crawlTimeOut"];
 	        this.kDays = source["kDays"];
@@ -610,6 +614,8 @@ export namespace data {
 	        this.httpProxyEnabled = source["httpProxyEnabled"];
 	        this.enableAgent = source["enableAgent"];
 	        this.qgqpBId = source["qgqpBId"];
+	        this.iwencaiApiKey = source["iwencaiApiKey"];
+	        this.emApiKey = source["emApiKey"];
 	        this.windowWidth = source["windowWidth"];
 	        this.windowHeight = source["windowHeight"];
 	        this.aiConfigs = this.convertValues(source["aiConfigs"], AIConfig);

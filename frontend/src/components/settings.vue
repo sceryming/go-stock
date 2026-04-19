@@ -23,6 +23,8 @@ const formRef = ref(null)
 const formValue = ref({
   ID: 1,
   tushareToken: '',
+  iwencaiApiKey: '',
+  emApiKey: '',
   dingPush: {
     enable: false,
     dingRobot: ''
@@ -54,6 +56,7 @@ const formValue = ref({
   httpProxyEnabled:false,
   enableAgent: false,
   qgqpBId: '',
+  updateChannel: 'release',
 })
 
 // 添加一个新的AI配置到列表
@@ -78,7 +81,12 @@ function removeAiConfig(index) {
   formValue.value.openAI.aiConfigs = formValue.value.openAI.aiConfigs.filter((_, i) => i !== index);
 }
 
-// 根据接口地址与 apiKey 自动获取模型列表，并填充到当前 aiConfig
+const updateChannelOptions = [
+  { label: 'Release（稳定版）', value: 'release' },
+  { label: 'Pre-release（预发布版）', value: 'pre' },
+  { label: 'Dev（开发版）', value: 'dev' },
+]
+
 async function fetchAiModels(aiConfig) {
   if (!aiConfig.baseUrl || !aiConfig.apiKey) {
     message.warning('请先填写接口地址和 apiKey')
@@ -188,6 +196,8 @@ onMounted(() => {
   GetConfig().then(res => {
     formValue.value.ID = res.ID
     formValue.value.tushareToken = res.tushareToken
+    formValue.value.iwencaiApiKey = res.iwencaiApiKey || ''
+    formValue.value.emApiKey = res.emApiKey || ''
     formValue.value.dingPush = {
       enable: res.dingPushEnable,
       dingRobot: res.dingRobot
@@ -222,6 +232,7 @@ onMounted(() => {
     formValue.value.httpProxyEnabled=res.httpProxyEnabled;
     formValue.value.enableAgent = res.enableAgent;
     formValue.value.qgqpBId = res.qgqpBId;
+    formValue.value.updateChannel = res.updateChannel || 'release';
 
   })
 
@@ -247,6 +258,8 @@ function saveConfig() {
     aiConfigs: formValue.value.openAI.aiConfigs,
     // 序列化aiConfigs列表以传递给后端
     tushareToken: formValue.value.tushareToken,
+    iwencaiApiKey: formValue.value.iwencaiApiKey,
+    emApiKey: formValue.value.emApiKey,
     prompt: formValue.value.openAI.prompt,
     questionTemplate: formValue.value.openAI.questionTemplate,
     crawlTimeOut: formValue.value.openAI.crawlTimeOut,
@@ -262,7 +275,8 @@ function saveConfig() {
     httpProxy:formValue.value.httpProxy,
     httpProxyEnabled:formValue.value.httpProxyEnabled,
     enableAgent: formValue.value.enableAgent,
-    qgqpBId: formValue.value.qgqpBId
+    qgqpBId: formValue.value.qgqpBId,
+    updateChannel: formValue.value.updateChannel
   })
 
   if (config.sponsorCode) {
@@ -324,6 +338,8 @@ function importConfig() {
       let config = JSON.parse(e.target.result);
       formValue.value.ID = config.ID
       formValue.value.tushareToken = config.tushareToken
+      formValue.value.iwencaiApiKey = config.iwencaiApiKey || ''
+      formValue.value.emApiKey = config.emApiKey || ''
       formValue.value.dingPush = {
         enable: config.dingPushEnable,
         dingRobot: config.dingRobot
@@ -354,6 +370,7 @@ function importConfig() {
       formValue.value.httpProxyEnabled=config.httpProxyEnabled
       formValue.value.enableAgent = config.enableAgent
       formValue.value.qgqpBId = config.qgqpBId
+      formValue.value.updateChannel = config.updateChannel || 'release'
     };
     reader.readAsText(file);
   };
@@ -438,6 +455,26 @@ function deletePrompt(ID) {
             <n-form-item-gi :span="6" label="暗黑主题：" path="darkTheme">
               <n-switch v-model:value="formValue.darkTheme"/>
             </n-form-item-gi>
+            <n-form-item-gi :span="8" label="更新通道：" path="updateChannel">
+              <n-select v-model:value="formValue.updateChannel" :options="updateChannelOptions" />
+              <n-tooltip placement="top">
+                <template #trigger>
+                  <n-icon color="#0e7a0d" size="20">
+                    <HelpCircleFilledIcon />
+                  </n-icon>
+                </template>
+                <template #default>
+                  <n-gradient-text :type="'warning'">
+                  <div style="max-width: 400px;text-align: left">
+                    更新通道说明：<br>
+                    <b>Release（稳定版）</b>：仅接收正式发布版本，稳定性最高<br>
+                    <b>Pre-release（预发布版）</b>：包含预发布版本，可提前体验新功能<br>
+                    <b>Dev（开发版）</b>：包含所有可用版本，获取最新开发进度
+                  </div>
+                  </n-gradient-text>
+                </template>
+              </n-tooltip>
+            </n-form-item-gi>
             <n-form-item-gi :span="10" label="浏览器安装路径：" path="browserPath">
               <n-input type="text" placeholder="浏览器安装路径" v-model:value="formValue.browserPath" clearable/>
             </n-form-item-gi>
@@ -462,6 +499,48 @@ function deletePrompt(ID) {
                     打开浏览器,访问东财网站，<br>
                     按F12打开开发人员工具-》网络面板，<br>
                     随便点开一个请求，复制请求cookie中qgqp_b_id对应的值。
+                  </div>
+                  </n-gradient-text>
+                </template>
+              </n-tooltip>
+            </n-form-item-gi>
+
+            <n-form-item-gi :span="11" label="问财API密钥：" path="iwencaiApiKey">
+              <n-input type="password" placeholder="同花顺问财开放平台API Key" v-model:value="formValue.iwencaiApiKey" clearable show-password-on="click"/>
+              <n-tooltip placement="top">
+                <template #trigger>
+                  <n-icon color="#0e7a0d" size="20">
+                    <HelpCircleFilledIcon />
+                  </n-icon>
+                </template>
+                <template #default>
+                  <n-gradient-text :type="'warning'">
+                  <div style="max-width: 400px;text-align: left">
+                    获取方法：<br>
+                    访问同花顺问财开放平台：<br>
+                    <a href="https://open.iwencai.com" target="_blank" style="color: #63e2b7">https://open.iwencai.com</a><br>
+                    注册并登录后，在控制台获取API Key。<br>
+                    配置后可使用问财智能选股、行情查询、研报搜索等功能。
+                  </div>
+                  </n-gradient-text>
+                </template>
+              </n-tooltip>
+            </n-form-item-gi>
+
+            <n-form-item-gi :span="11" label="东财AI密钥：" path="emApiKey">
+              <n-input type="password" placeholder="东方财富AI SaaS API Key" v-model:value="formValue.emApiKey" clearable show-password-on="click"/>
+              <n-tooltip placement="top">
+                <template #trigger>
+                  <n-icon color="#0e7a0d" size="20">
+                    <HelpCircleFilledIcon />
+                  </n-icon>
+                </template>
+                <template #default>
+                  <n-gradient-text :type="'warning'">
+                  <div style="max-width: 400px;text-align: left">
+                    获取方法：<br>
+                    访问东方财富妙想AI平台获取API Key。<br>
+                    配置后可使用个股业绩点评功能。
                   </div>
                   </n-gradient-text>
                 </template>

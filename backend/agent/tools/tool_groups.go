@@ -20,15 +20,17 @@ const (
 )
 
 var toolGroupMap = map[string]ToolGroup{
-	"QueryStockCodeInfo": GroupBase,
-	"QueryBKDictInfo":    GroupBase,
-	"GetCurrentTime":     GroupBase,
-	"GetFollowedStocks":  GroupBase,
-	"GetHolidayInfo":     GroupBase,
-	"GetHolidayYear":     GroupBase,
-	"GetHolidayBatch":    GroupBase,
-	"IsTradingDay":       GroupBase,
-	"GetNextTradingDay":  GroupBase,
+	"QueryStockCodeInfo":           GroupBase,
+	"QueryBKDictInfo":              GroupBase,
+	"GetCurrentTime":               GroupBase,
+	"GetFollowedStocks":            GroupBase,
+	"GetHolidayInfo":               GroupBase,
+	"GetHolidayYear":               GroupBase,
+	"GetHolidayBatch":              GroupBase,
+	"IsTradingDay":                 GroupBase,
+	"GetNextTradingDay":            GroupBase,
+	"CreateAiRecommendStocks":      GroupBase,
+	"BatchCreateAiRecommendStocks": GroupBase,
 
 	"GetStockInfo":            GroupStockAnalysis,
 	"GetStockKLine":           GroupStockAnalysis,
@@ -40,6 +42,19 @@ var toolGroupMap = map[string]ToolGroup{
 	"GetStockRZRQInfo":        GroupStockAnalysis,
 	"GetStockConceptInfo":     GroupStockAnalysis,
 
+	"QueryEvent": GroupStockAnalysis,
+
+	"QueryBasicInfo": GroupStockAnalysis,
+
+	"QueryFinance": GroupStockAnalysis,
+
+	"QueryIndustry": GroupStockAnalysis,
+
+	"QueryManagement": GroupStockAnalysis,
+
+	"QueryFundFinance":  GroupStockAnalysis,
+	"QueryBusinessData": GroupStockAnalysis,
+
 	"GetMarketData":              GroupMarket,
 	"GlobalStockIndexesReadable": GroupMarket,
 	"GetStockChanges":            GroupMarket,
@@ -48,13 +63,57 @@ var toolGroupMap = map[string]ToolGroup{
 	"GetChangeRank":              GroupMarket,
 	"GetDailyDimensionStats":     GroupMarket,
 	"GetTypeStatsByDate":         GroupMarket,
+	"QueryIwencai":               GroupMarket,
+
+	"QueryZhishu": GroupMarket,
+
+	"QueryMacro": GroupMarket,
+
+	"QueryFutures": GroupMarket,
+
+	"QueryStockConnect": GroupMarket,
+
+	"StockEarningsReview": GroupStockAnalysis,
+
+	"FinancialQA": GroupAIAnalysis,
+
+	"IndustryResearch": GroupStockAnalysis,
+
+	"TrackingReport": GroupStockAnalysis,
+
+	"FinanceDataQuery": GroupStockAnalysis,
+
+	"FinanceSearch": GroupNewsResearch,
+
+	"SearchReport": GroupNewsResearch,
+
+	"QueryInsResearch": GroupNewsResearch,
+
+	"SearchNews": GroupNewsResearch,
+
+	"SearchInvestor": GroupNewsResearch,
+
+	"SearchAnnouncement": GroupNewsResearch,
 
 	"FilterStocks":            GroupScreening,
 	"SearchStockByIndicators": GroupScreening,
-	"SearchBk":                GroupScreening,
-	"SearchETF":               GroupScreening,
-	"HotStrategyTable":        GroupScreening,
-	"HotStockTable":           GroupScreening,
+
+	"SelectAStock": GroupScreening,
+
+	"SelectSector": GroupScreening,
+
+	"SelectETF":             GroupScreening,
+	"SelectFundManager":     GroupScreening,
+	"SelectConvertibleBond": GroupScreening,
+	"SelectFundCompany":     GroupScreening,
+	"SelectFund":            GroupScreening,
+	"SelectFuturesOption":   GroupScreening,
+	"SelectHKStock":         GroupScreening,
+	"SelectUSStock":         GroupScreening,
+	"SearchBk":              GroupScreening,
+	"SearchETF":             GroupScreening,
+	"HotStrategyTable":      GroupScreening,
+	"HotStockTable":         GroupScreening,
 
 	"GetStockMoneyData":        GroupMoneyFlow,
 	"GetMutualTop10Deal":       GroupMoneyFlow,
@@ -73,13 +132,16 @@ var toolGroupMap = map[string]ToolGroup{
 	"GetLongTigerList":            GroupNewsResearch,
 	"GetHotStockList":             GroupNewsResearch,
 	"GetHotEventList":             GroupNewsResearch,
+	"GetUplimitLadder":            GroupNewsResearch,
+	"GetUplimitHotPlates":         GroupNewsResearch,
+	"GetUplimitHotStocks":         GroupNewsResearch,
+	"GetUplimitExplodedStocks":    GroupNewsResearch,
+	"GetUplimitPlateStocks":       GroupNewsResearch,
 
-	"AiRecommendStocks":            GroupAIAnalysis,
-	"GetAIAnalysisHistory":         GroupAIAnalysis,
-	"GetAIAnalysisDetail":          GroupAIAnalysis,
-	"GetAIAnalysisContent":         GroupAIAnalysis,
-	"CreateAiRecommendStocks":      GroupAIAnalysis,
-	"BatchCreateAiRecommendStocks": GroupAIAnalysis,
+	"AiRecommendStocks":    GroupAIAnalysis,
+	"GetAIAnalysisHistory": GroupAIAnalysis,
+	"GetAIAnalysisDetail":  GroupAIAnalysis,
+	"GetAIAnalysisContent": GroupAIAnalysis,
 
 	"SetTradingPrice":     GroupOperations,
 	"SendDingDingMessage": GroupOperations,
@@ -99,8 +161,19 @@ var groupKeywordsList = []groupKeywords{
 		"股票", "股价", "行情", "K线", "k线", "日K", "周K", "月K", "分钟线",
 		"分时", "实时", "价格", "涨跌", "成交量", "成交额",
 		"财务", "报表", "营收", "利润", "ROE", "PE", "PB", "EPS",
+		"毛利率", "净利率", "现金流", "负债率",
+		"行业估值", "行业排名", "行业盈利",
 		"股东", "持股", "融资融券", "融券", "融资", "杠杆",
+		"股本结构", "股东户数", "实控人", "前十大股东",
 		"概念", "板块归属", "所属概念",
+		"业绩预告", "增发", "配股", "质押", "解禁", "调研", "监管函",
+		"基本资料", "上市日期", "基金资料", "费率", "合约信息",
+		"主营业务", "主要客户", "供应商", "参控股", "股权投资", "重大合同",
+		"基金业绩", "基金持仓", "基金风险", "基金评级", "基金获奖",
+		"业绩点评", "财报分析", "业绩报告", "营收分析", "利润分析", "季报", "年报", "中报",
+		"行业研究", "行业报告", "产业分析", "行业深度", "行业趋势", "市场分析",
+		"跟踪报告", "个股跟踪", "行业跟踪", "动态跟踪", "最新动态跟踪",
+		"查数", "金融数据查询", "数据查询", "指标查询", "估值数据", "行情数据查询",
 		"分析", "诊断", "评估", "估值",
 		"技术面", "基本面", "MACD", "KDJ", "RSI", "布林", "BOLL",
 		"均线", "MA5", "MA10", "MA20", "MA60", "MA120",
@@ -114,9 +187,24 @@ var groupKeywordsList = []groupKeywords{
 		"全球指数", "道琼斯", "纳斯达克", "标普", "恒生", "日经",
 		"异动统计", "异动趋势", "异动排行", "异动排名", "异动次数",
 		"利好", "利空", "异动类型", "异动分布",
+		"问财", "同花顺", "行情查询", "行情数据",
+		"指数行情", "指数点位", "沪深300", "创业板指", "中证500",
+		"宏观", "GDP", "CPI", "PPI", "PMI", "社融", "M2", "LPR",
+		"期货", "期权", "波动率", "持仓", "行权",
+		"北向资金", "南向资金", "沪深港通", "沪股通", "深股通", "港股通", "AH溢价",
 	}},
 	{GroupScreening, []string{
 		"筛选", "选股", "过滤", "条件选股", "指标选股",
+		"智能选股",
+		"选板块", "板块排行", "板块筛选",
+		"选ETF", "ETF筛选",
+		"选基金经理", "基金经理筛选", "基金经理排名",
+		"选可转债", "可转债筛选", "可转债溢价率",
+		"选基金公司", "基金公司筛选", "基金公司排名",
+		"选基金", "基金筛选", "基金排名",
+		"选期货期权", "期货筛选", "期权筛选",
+		"选港股", "港股筛选", "港股排行",
+		"选美股", "美股筛选", "美股排行",
 		"形态选股", "MACD金叉", "KDJ金叉", "放量突破",
 		"连涨", "连跌", "多头排列", "空头排列",
 		"板块", "概念", "ETF",
@@ -130,16 +218,29 @@ var groupKeywordsList = []groupKeywords{
 	}},
 	{GroupNewsResearch, []string{
 		"新闻", "资讯", "消息", "公告", "研报", "研究报告",
+		"最新动态", "政策动态", "行业趋势",
 		"券商", "机构观点", "分析师", "评级",
+		"投资评级", "目标价", "行业分析", "深度分析",
+		"ESG", "信用评级", "主体评级", "基金评级", "券商金股", "业绩预测",
 		"互动", "问答", "投资者互动",
+		"投资者关系", "业绩说明会", "路演", "投资者调研", "分析师会议", "投关活动",
+		"公告搜索", "分红公告", "回购公告", "重组公告", "定期报告",
+		"资讯搜索", "金融资讯", "舆情监控", "热点捕捉", "研报速览", "公告精读",
 		"日历", "财报日", "股东大会", "IPO",
 		"龙虎榜", "营业部",
+		"涨停", "连板", "梯队", "涨停复盘", "涨停板块", "炸板", "封板",
+		"热门板块", "板块热度", "板块轮动", "主线题材", "接力板块",
+		"个股热度", "热门个股", "人气股", "关注度",
+		"封板失败", "开板", "破板",
 		"热门话题", "热点事件", "雪球",
 	}},
 	{GroupAIAnalysis, []string{
 		"AI分析", "AI推荐", "历史分析", "分析报告",
 		"推荐股票", "买入评级", "增持", "减持",
 		"止盈", "止损", "买入价", "目标价",
+		"帮我查", "分析一下", "怎么样", "是什么", "解释一下", "总结一下",
+		"深度分析", "深度思考", "详细分析", "仔细想想",
+		"金融问答", "智能问答",
 	}},
 	{GroupOperations, []string{
 		"预警", "价位", "开仓", "止盈价", "止损价", "成本价",
